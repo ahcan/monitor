@@ -18,7 +18,7 @@
             "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - serverity: %(levelname)s - message: %(message)s"
         },
         "monitor":{
-            "format":"Monitor: date: %(asctime)s - %(name)s - serverity: %(levelname)s - message: %(message)s"
+            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s - %(lineno)d -  serverity: %(levelname)s - message: %(message)s"
         }
     },
     "handlers": {
@@ -49,7 +49,9 @@
         },
         "utils_handler":{
             "filename": "/var/log/monitor/utils.log",
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
+            "maxBytes": 52428800,
+            "backupCount": 9,
             "level": "DEBUG",
             "formatter": "utils"
         },
@@ -83,6 +85,22 @@
             "level": "DEBUG"
         },
         "utils": {
+            "handlers": ["utils_handler"],
+            "level": "DEBUG"
+        },
+        "Ffmpeg": {
+            "handlers": ["utils_handler"],
+            "level": "DEBUG"
+        },
+        "FirstCheck": {
+            "handlers": ["utils_handler"],
+            "level": "DEBUG"
+        },
+        "LastCheck": {
+            "handlers": ["utils_handler"],
+            "level": "DEBUG"
+        },
+        "VideoCheck": {
             "handlers": ["utils_handler"],
             "level": "DEBUG"
         },
