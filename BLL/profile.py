@@ -79,7 +79,7 @@ class Profile(object):
             self.logger.info("Master Api: " + http_master_rsp["message"])
             return http_master_rsp
         eror = "Master Api: " + http_master_rsp["message"] + "\n"
-        self.logger.warning("Master Api: " + http_master_rsp["message"])
+        self.logger.warning("Master Api Put id ({0}): ".format(id) + http_master_rsp["message"])
 
         if API["slave"]["ACTIVE"]:
             slave_api = ApiProfileDAL("slave")
