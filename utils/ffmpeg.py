@@ -1,6 +1,8 @@
 import time
 from subprocess import call
 import os, sys, subprocess, shlex, re, fnmatch,signal
+from config import STIME, ETIME, CHANNLE
+from datetime import datetime
 
 class Ffmpeg:
     def check_source(self, source):
@@ -26,6 +28,14 @@ class Ffmpeg:
                 audio=1
             if (line.startswith('codec_type=video')):
                 video=1
+        ctime = datetime.now().strftime("%H:%M:%S").split(":")
+        chour, cminute,csecond = ctime
+        shour, sminute, ssecond = STIME
+        ehour, eminute, esecond = ETIME
+        chour, cminute, csecond, shour, sminute, ssecond, ehour, eminute, esecond = int(chour),int(cminute),int(csecond),int(shour),int(sminute),int(ssecond),int(ehour),int(eminute),int(esecond)
+        if value == 1 and (source in CHANNLE) and chour <= ehour and chour >= shour:
+            if cminute <= eminute and cminute >= sminute:
+                return 1
         if value == 1 and audio == 1 and video == 1:
             return 1
         if value == 1 and audio == 1 and video == 0:

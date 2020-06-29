@@ -66,3 +66,7 @@ SOCKET = {
     "USER"                  :"monitor",
     "PASSWD"                :"iptv13579"
     }
+
+STIME =['0','0','0']
+ETIME = ['6','0','0']
+CHANNLE = ['225.1.1.102']
