@@ -18,8 +18,8 @@ from snmp_agent import AgentSnmp as LocalSnmp
 class VideoCheck(object):
     """docstring for VideoCheck"""
     def __init__(self, id = None, name = None, type = None, protocol = None, source = None, last_status = None, last_video_status = None, agent = None):
-        self.logger = logging.getLogger(__name__)
-        self.image_path = '/tmp/capture/image.'+str(id)+'.png'
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.image_path = '/tmp/capture1/image.'+str(id)+'.png'
         self.id = id
         self.name = name
         self.type = type
@@ -31,10 +31,12 @@ class VideoCheck(object):
         self.ip =SYSTEM["HOST"]
 
     def get_histogram_previous_image(self):
+        #self.logger.debug("Source {0}-path previous image: {1}".format(self.source,self.image_path))
         if os.path.isfile(self.image_path):
             previous_image = Image.open(self.image_path)
         else:
             previous_image = Image.open('/tmp/capture/error.png')
+            self.logger.debug("previous image {0}: Error".format(self.source))
         histogram_previous = previous_image.histogram()
         return histogram_previous
 
@@ -47,6 +49,7 @@ class VideoCheck(object):
             curent_image = Image.open(self.image_path)
         else:
             curent_image = Image.open('/tmp/capture/error.png')
+            self.logger.debug("curent image {0}: Error".format(self.source))
         histogram_curent = curent_image.histogram()
         return histogram_curent
 
@@ -64,6 +67,7 @@ class VideoCheck(object):
         child_thread_list = []
         profile = ProfileBLL()
         profile_data = {"video": video_status, "agent": self.agent, "ip": self.ip}
+        self.logger.debug("update profile data: video{0} - agent{1} - ip{2}".format(video_status,self.agent, self.ip))
         child_thread = threading.Thread(target=profile.put, args=(self.id, profile_data,))
         child_thread.start()
         child_thread_list.append(child_thread)
@@ -106,7 +110,7 @@ class VideoCheck(object):
         histogram_previous = self.get_histogram_previous_image()
         histogram_curent = self.get_histogram_curent_image()
         rms = self.compare_two_images(histogram_previous, histogram_curent)
-        self.logger.debug("First check RMS :%d"%(rms))
+        #self.logger.debug("First check RMS soure(%s) :%d"%(self.source,rms))
         if rms < 150:
             if int(self.last_video_status) == 1:
                 time.sleep(SYSTEM["BREAK_TIME"] * 3)
