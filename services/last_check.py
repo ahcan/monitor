@@ -13,8 +13,8 @@ from snmp_agent import Snmp
 class LastCheck(object):
     """docstring for LastCheck"""
     def __init__(self):
-        self.logger = logging.getLogger(__name__)
-
+        self.logger = logging.getLogger(self.__class__.__name__)
+        #self.logger.debug("LastCheck =====")
 
     def check_source(self, source, last_status, id, agent, name, type):
         """
@@ -27,7 +27,7 @@ class LastCheck(object):
         """
         ffmpeg = Ffmpeg()
         check = ffmpeg.check_source(source)
-        # print "%s : %s"%(check, last_status)
+        print "%s : %s"%(check, last_status)
         self.logger.debug("Curent :%s <> Last: %s, %s %s %s"%(check, last_status, source, name, type))
         if check != last_status:
             date_time = DateTime()
