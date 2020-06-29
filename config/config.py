@@ -3,14 +3,14 @@ SYSTEM = {
         'TO': 22, 
         'FROM': 6
         }, 
-    'HOST': '10.0.0.205', 
+    'HOST': '10.0.200.27', 
     'libery': {
         'FFPROBE': '/usr/local/bin/ffprobe', 
         'FFMPEG': '/opt/ffmpeg/ffmpeg'
         }, 
     'monitor': {
         'SOURCE': True, 
-        'BLACK_SCREEN': False
+        'BLACK_SCREEN': True
         }, 
     'BREAK_TIME': 20,
     'RUNNING_BACKUP_QUEUE' : 'running_backup'
@@ -18,14 +18,14 @@ SYSTEM = {
 
 API = {
     'master': {
-        'URL': '42.117.9.100', 
+        'URL': '10.0.200.99', 
         'PASSWORD': 'iptv13579', 
         'PORT': 8888, 
         'USER': 'monitor'
         },
     'slave': {
         'ACTIVE': True, 
-        'URL': '42.117.9.99', 
+        'URL': '42.117.9.100', 
         'PASSWORD': 'iptv13579', 
         'PORT': 8888, 
         'USER': 'monitor'
@@ -35,7 +35,7 @@ API = {
 DATABASE = {
     'master': {
         'NAME': 'monitor', 
-        'HOST': '118.69.166.134', 
+        'HOST': '10.0.200.32', 
         'USER': 'MonitorAgent', 
         'ACTIVE': True, 
         'PASSWORD': '11nit0rA93nt', 
@@ -43,7 +43,7 @@ DATABASE = {
         },
     'slave': {
         'NAME': 'monitor', 
-        'HOST': '42.144.244.190', 
+        'HOST': '10.0.200.13', 
         'USER': 'MonitorAgent', 
         'ACTIVE': False, 
         'PASSWORD': '11nit0rA93nt', 
@@ -61,8 +61,12 @@ SUPERVISORD={
     }
 
 SOCKET = {
-    "HOST"                  :"42.117.9.99",
+    "HOST"                  :"10.0.200.99",
     "PORT"                  :5672,
     "USER"                  :"monitor",
     "PASSWD"                :"iptv13579"
     }
+
+STIME =['0','0','0']
+ETIME = ['6','0','0']
+CHANNEL = ['225.1.2.198','225.1.1.131']
