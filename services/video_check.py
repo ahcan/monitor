@@ -13,13 +13,15 @@ from utils import DateTime
 from BLL.profile import Profile as ProfileBLL
 from BLL.log import Log as LogBLL
 from config.config import SYSTEM
+from config import STIME, ETIME, CHANNEL
+from datetime import datetime
 from snmp_agent import AgentSnmp as LocalSnmp
 
 class VideoCheck(object):
     """docstring for VideoCheck"""
     def __init__(self, id = None, name = None, type = None, protocol = None, source = None, last_status = None, last_video_status = None, agent = None):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.image_path = '/tmp/capture1/image.'+str(id)+'.png'
+        self.image_path = '/tmp/capture/image.'+str(id)+'.png'
         self.id = id
         self.name = name
         self.type = type
@@ -110,8 +112,21 @@ class VideoCheck(object):
         histogram_previous = self.get_histogram_previous_image()
         histogram_curent = self.get_histogram_curent_image()
         rms = self.compare_two_images(histogram_previous, histogram_curent)
-        #self.logger.debug("First check RMS soure(%s) :%d"%(self.source,rms))
+        self.logger.debug("First check RMS soure(%s) :%d"%(self.source,rms))
+        ctime = datetime.now().strftime("%H:%M:%S").split(":")
+        chour, cminute,csecond = ctime
+        shour, sminute, ssecond = STIME
+        ehour, eminute, esecond = ETIME
+        chour, cminute, csecond, shour, sminute,ssecond, ehour, eminute, esecond = int(chour),int(cminute),int(csecond),int(shour),int(sminute),int(ssecond),int(ehour),int(eminute),int(esecond)
+        #self.logger.debug("First check RMS soure(%s) :%d"%(self.source.split(":")[0],rms))
         if rms < 150:
+            if (self.source.split(":")[0] in CHANNEL) and chour <= ehour and chour >= shour:
+                # check soure in time no check video
+                self.logger.debug("Soures don't check %s %s %s: %d"%(self.source, self.name, self.type, rms))
+                video_status = 1
+                source_status = 1
+                self.update_data(video_status, source_status)
+                return 0
             if int(self.last_video_status) == 1:
                 time.sleep(SYSTEM["BREAK_TIME"] * 3)
                 histogram_recheck = self.get_histogram_curent_image()
