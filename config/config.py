@@ -18,6 +18,7 @@ SYSTEM = {
 
 API = {
     'master': {
+        'ACTIVE': False,
         'URL': '10.0.200.99', 
         'PASSWORD': 'iptv13579', 
         'PORT': 8888, 

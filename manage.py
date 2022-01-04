@@ -1,6 +1,6 @@
 import sys
 from optparse import OptionParser
-from services import FirstCheck, LastCheck, VideoCheck, Monitor, Snmp
+from services import FirstCheck, LastCheck, VideoCheck, Monitor, Snmp, RequiredCheck
 
 if __name__ == "__main__":
     # Parsing argurments
@@ -35,5 +35,10 @@ if __name__ == "__main__":
     elif options.service_check == 's' or options.service_check == 'S' or options.service_check == 'snmp':
         snmp = Snmp()
         snmp.set()
+
+    elif options.service_check == 'r' or options.service_check == 'R' or options.service_check == 'Debugsource':
+        rec = RequiredCheck("ip:port")
+        rec.set()
+
 
  

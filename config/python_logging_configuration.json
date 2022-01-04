@@ -61,6 +61,14 @@
             "level": "WARNING",
             "facility": "local6",
             "formatter": "monitor"
+        },
+        "ffmpeg_handler":{
+            "filename": "/var/log/monitor/ffmpeg.log",
+            "class": "logging.handlers.RotatingFileHandler",
+            "maxBytes": 52428800,
+            "backupCount": 9,
+            "level": "DEBUG",
+            "formatter": "utils"
         }
     },
     "root": {
@@ -107,6 +115,10 @@
         "monitor": {
             "handlers": ["monitor_handler"],
             "level": "WARNING"
+        },
+        "RequiredCheck": {
+            "handlers": ["ffmpeg_handler"],
+            "level": "DEBUG"
         }
     }
 }

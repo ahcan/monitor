@@ -6,6 +6,7 @@ import logging.handlers
 from .first_check import FirstCheck
 from .last_check import LastCheck
 from .video_check import VideoCheck
+from .required_check import RequiredCheck
 from .as_required_check import AsRequiredCheck
 from .monitor import Monitor
 from .snmp_agent import Snmp, AgentSnmp
