@@ -19,6 +19,9 @@
         },
         "monitor":{
             "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s - %(lineno)d -  serverity: %(levelname)s - message: %(message)s"
+        },
+        "audio":{
+            "format":"AudioDetect - serverity: %(levelname)s - message: %(message)s"
         }
     },
     "handlers": {
@@ -69,6 +72,14 @@
             "backupCount": 9,
             "level": "DEBUG",
             "formatter": "utils"
+        },
+        "audio_handler":{
+            "filename": "/var/log/monitor/audiodetect.log",
+            "class": "logging.handlers.RotatingFileHandler",
+            "maxBytes": 52428800,
+            "backupCount": 9,
+            "level": "DEBUG",
+            "formatter": "utils"
         }
     },
     "root": {
@@ -97,7 +108,7 @@
             "level": "DEBUG"
         },
         "Ffmpeg": {
-            "handlers": ["utils_handler"],
+            "handlers": ["ffmpeg_handler"],
             "level": "DEBUG"
         },
         "FirstCheck": {
@@ -118,6 +129,10 @@
         },
         "RequiredCheck": {
             "handlers": ["ffmpeg_handler"],
+            "level": "DEBUG"
+        },
+        "AudioCheck": {
+            "handlers": ["audio_handler"],
             "level": "DEBUG"
         }
     }
