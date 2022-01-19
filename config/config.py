@@ -5,8 +5,8 @@ SYSTEM = {
         }, 
     'HOST': '10.0.200.27', 
     'libery': {
-        'FFPROBE': '/usr/local/bin/ffprobe', 
-        'FFMPEG': '/opt/ffmpeg/ffmpeg'
+        'FFPROBE': '/usr/bin/ffprobe', 
+        'FFMPEG': '/usr/bin/ffmpeg'
         }, 
     'monitor': {
         'SOURCE': True, 
