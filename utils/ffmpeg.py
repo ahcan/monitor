@@ -59,4 +59,30 @@ class Ffmpeg:
             if i > timeout:
                 os.kill(p.pid, signal.SIGKILL)
 
-
+    def dectect_audio_volume(self, source, duration):
+        '''source: udp://ip:port
+        duration: time decode (seconds)
+        return: max_volume, mean_volume (-db) '''
+        from config.config import SYSTEM
+        cmnd = [SYSTEM["libery"]["FFMPEG"], '-i', source, '-t', '{0}'.format(duration), '-af', 'volumedetect', '-f', 'null', '/dev/null']
+        p = subprocess.Popen(cmnd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        timeout = 5
+        i = 0
+        while p.poll() is None:
+            # wait for get multicast source
+            time.sleep(1)
+            i+=1
+            if i > timeout:
+                os.kill(p.pid, signal.SIGKILL)
+        out, err = p.communicate()
+        mean = 0
+        max = 0
+        for line in err.splitlines():
+            self.logger = logging.getLogger("Ffmpeg")
+            self.logger.debug("FFmpeg audio: {0}".format(line))
+            if('mean_volume' in line):
+                mean = float(line[line.rfind(':')+2:-3])
+            elif ('max_volume' in line):
+                max = float(line[line.rfind(':')+2:-3])
+        return mean, max
+            

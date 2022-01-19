@@ -23,8 +23,8 @@ class FirstCheck(object):
         """
         ffmpeg = Ffmpeg()
         check = ffmpeg.check_source(source)
-        #print "%s : %s"%(check, last_status)
-        self.logger.debug("Source: %s Curent :%s <> Last: %s"%(source, check, last_status))
+        self.check_audio(source, agent, name, type, vmin=-23)
+        #self.logger.debug("Source: %s Curent :%s <> Last: %s"%(source, check, last_status))
         if check != last_status:
             json_data = """{"source":"%s","status":%s,"pa_id":%s,"agent": "%s","thread":%s,"name":"%s","type":"%s"}"""%(source, last_status, id, agent, thread, name, type)
             file = File()
@@ -32,12 +32,25 @@ class FirstCheck(object):
             if not replicate:
                 self.logger.info("Doubt curent %s <> Last %s : %s"%(check, last_status, str(json_data)))
 
+    def check_audio(self, source, agent, name, type, vmin):
+        """
+        Get value audio
+        vmin: audio volume for alarm
+        """
+        ffmpeg = Ffmpeg()
+        self.audio_logger = logging.getLogger("AudioCheck")
+        vmean, vmax= ffmpeg.dectect_audio_volume(source=source, duration=3)
+        if vmean <= vmin:
+            self.logger.debug ("'name': {0}, 'volume': {1}-{2}".format(name, vmean, vmax))
+        json_data = {"'source' :{0}, 'vmean':{1}, 'vmax':{2}, 'agent':{3}, 'name':{4}, 'type':{5}".format(source, vmean, vmax, agent, name, type)}
+        self.audio_logger.info("Detect audio: {0}".format(json_data))
+
 
     def check(self):
         if not SYSTEM["monitor"]["SOURCE"]:
             message = "Black screen monitor is disable, check your config!"
             self.logger.warning(message)
-            print message
+            #print message
             time.sleep(60)
             exit(0)
         try:
@@ -47,8 +60,8 @@ class FirstCheck(object):
                 profile_list = data["data"]
             else:
                 self.logger.error(str(data["status"]) + " " + data["message"])
-                print "Error code: " + str(data["status"])
-                print data["message"]
+                #print "Error code: " + str(data["status"])
+                #print data["message"]
                 exit(1)
             # ancestor_thread_list = []
             for profile in profile_list:
