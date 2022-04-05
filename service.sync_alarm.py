@@ -9,8 +9,10 @@ from BLL.profile import Profile as ProfileBLL
 from supervisord import Supervisord
 from config import SYSTEM
 from rabbit import Rabbit
+from pathlib import Path
 
-with open("/monitor/config/python_logging_configuration.json", 'r') as configuration_file:
+currentPath = Path(__file__).parent.absolute()
+with open("{0}/config/python_logging_configuration.json".format(currentPath), 'r') as configuration_file:
     config_dict = json.load(configuration_file)
 logging.config.dictConfig(config_dict)
 logger = logging.getLogger("sync_alarm")

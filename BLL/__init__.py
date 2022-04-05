@@ -6,8 +6,9 @@ import logging.handlers
 from .agent import Agent
 from .log import Log
 from .profile import Profile, Snmp
-
-with open("/monitor/config/python_logging_configuration.json", 'r') as configuration_file:
+from pathlib import Path
+currentPath = Path(__file__).parent.absolute()
+with open("/monitor/config/python_logging_configuration.json".format(currentPath), 'r') as configuration_file:
     config_dict = json.load(configuration_file)
 logging.config.dictConfig(config_dict)
 # Create the Logger

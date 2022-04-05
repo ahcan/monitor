@@ -6,6 +6,8 @@ from utils.file import File
 from utils.ffmpeg import Ffmpeg
 from BLL.profile import Profile as ProfileBLL
 from config.config import SYSTEM
+from rabbit import Rabbit
+import json
 
 class FirstCheck(object):
     """docstring for FirstCheck"""
@@ -42,8 +44,8 @@ class FirstCheck(object):
         vmean, vmax= ffmpeg.dectect_audio_volume(source=source, duration=3)
         if vmean <= vmin:
             self.logger.debug ("'name': {0}, 'volume': {1}-{2}".format(name, vmean, vmax))
-        json_data = {"'source' :{0}, 'vmean':{1}, 'vmax':{2}, 'agent':{3}, 'name':{4}, 'type':{5}".format(source, vmean, vmax, agent, name, type)}
-        self.audio_logger.info("Detect audio: {0}".format(json_data))
+        json_data = {'source':source, 'vmean':vmean, 'vmax':vmax, 'agent':agent, 'name':name, 'type':type}
+        self.audio_logger.info("{0}".format(json.dumps(json_data)))
 
 
     def check(self):
@@ -84,7 +86,7 @@ class FirstCheck(object):
             #     ancestor_thread.join()
         except Exception as e:
             self.logger.error(str(e))
-            print e
+            print(e)
         finally:
             time.sleep(20)
 
