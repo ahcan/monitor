@@ -42,7 +42,7 @@ class FirstCheck(object):
         ffmpeg = Ffmpeg()
         self.audio_logger = logging.getLogger("AudioCheck")
         vmean, vmax= ffmpeg.dectect_audio_volume(source=source, duration=3)
-        if vmean <= vmin:
+        if vmean <= vmin or vmax == 0:
             self.logger.debug ("'name': {0}, 'volume': {1}-{2}".format(name, vmean, vmax))
         json_data = {'source':source, 'vmean':vmean, 'vmax':vmax, 'agent':agent, 'name':name, 'type':type}
         self.audio_logger.info("{0}".format(json.dumps(json_data)))

@@ -1,9 +1,9 @@
 import time
-from subprocess import call
 import os, sys, subprocess, shlex, re, fnmatch,signal
 from config import STIME, ETIME, CHANNEL
 from datetime import datetime
 import logging
+from threading import Timer
 
 class Ffmpeg:
     def check_source(self, source):
@@ -65,16 +65,24 @@ class Ffmpeg:
         return: max_volume, mean_volume (-db) '''
         from config.config import SYSTEM
         cmnd = [SYSTEM["libery"]["FFMPEG"], '-i', source, '-t', '{0}'.format(duration), '-af', 'volumedetect', '-f', 'null', '/dev/null']
-        p = subprocess.Popen(cmnd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        timeout = 5
-        i = 0
-        while p.poll() is None:
-            # wait for get multicast source
-            time.sleep(1)
-            i+=1
-            if i > timeout:
-                os.kill(p.pid, signal.SIGKILL)
-        out, err = p.communicate()
+        p = subprocess.Popen(cmnd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, bufsize=8192)
+        timer = Timer(duration+10, p.kill)
+        try:
+            timer.start()
+            out, err = p.communicate()
+        finally:
+            timer.cancel()
+        #timeout = 15
+        #i = 0
+        #while p.poll() is None:
+        #    # wait for get multicast source
+        #    time.sleep(1)
+        #    i+=1
+        #    if i > timeout:
+        #        os.kill(p.pid, signal.SIGKILL)
+
+        #out, err = p.communicate()
+        #print("Error code:{0}-{1}".format(errorcode,err))
         mean = 0
         max = 0
         for line in err.splitlines():

@@ -5,8 +5,8 @@ SYSTEM = {
         }, 
     'HOST': '10.0.200.27', 
     'libery': {
-        'FFPROBE': '/usr/bin/ffprobe', 
-        'FFMPEG': '/usr/bin/ffmpeg'
+        'FFPROBE': '/usr/local/bin/ffprobe', 
+        'FFMPEG': '/usr/local/bin/ffmpeg'
         }, 
     'monitor': {
         'SOURCE': True, 
@@ -19,15 +19,15 @@ SYSTEM = {
 API = {
     'master': {
         'ACTIVE': False,
-        'URL': '10.0.200.99', 
-        'PASSWORD': 'iptv13579', 
+        'URL': '10.0.200.100', 
+        'PASSWORD': 'xxxx', 
         'PORT': 8888, 
         'USER': 'monitor'
         },
     'slave': {
         'ACTIVE': True, 
-        'URL': '42.117.9.100', 
-        'PASSWORD': 'iptv13579', 
+        'URL': '10.0.200.100', 
+        'PASSWORD': 'xxxx', 
         'PORT': 8888, 
         'USER': 'monitor'
         }
@@ -65,7 +65,7 @@ SOCKET = {
     "HOST"                  :"10.0.200.99",
     "PORT"                  :5672,
     "USER"                  :"monitor",
-    "PASSWD"                :"iptv13579"
+    "PASSWD"                :"xxxx"
     }
 
 STIME =['0','0','0']
