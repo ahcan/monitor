@@ -11,7 +11,7 @@ from .as_required_check import AsRequiredCheck
 from .monitor import Monitor
 from .snmp_agent import Snmp, AgentSnmp
 from pathlib import Path
-currentPath = Path(__file__).parent.absolute()
+currentPath = Path().parent.absolute()
 
 with open("{0}/config/python_logging_configuration.json".format(currentPath), 'r') as configuration_file:
     config_dict = json.load(configuration_file)

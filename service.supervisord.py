@@ -11,8 +11,10 @@ from config import SUPERVISORD, SYSTEM
 from rabbit import Rabbit
 from BLL import Profile as ProfileBLL
 from supervisord import Supervisord
+from pathlib import Path
 
-with open("config/python_logging_configuration.json", 'r') as configuration_file:
+currentPath = Path(__file__).parent.absolute()
+with open("{0}/config/python_logging_configuration.json".format(currentPath), 'r') as configuration_file:
     config_dict = json.load(configuration_file)
 logging.config.dictConfig(config_dict)
 # Create the Logger
