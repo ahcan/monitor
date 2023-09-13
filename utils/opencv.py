@@ -3,9 +3,15 @@ import os, sys, subprocess, shlex, re, fnmatch,signal
 from config import STIME, ETIME, CHANNEL
 from datetime import datetime
 import logging
+from requests.exceptions import ConnectionError
 from threading import Timer
+import cv2
+#import numpy as np  # Import NumPy
 
 class Ffmpeg:
+    def __init__(self):
+        self.logger = logging.getLogger("Ffmpeg")
+
     def check_source(self, source):
         self.logger = logging.getLogger("Ffmpeg")
         from config.config import SYSTEM
@@ -18,6 +24,7 @@ class Ffmpeg:
             i+=1
             if i > timeout:
                 os.kill(p.pid, signal.SIGKILL)
+        p.wait()
         out, err = p.communicate()
         value=0
         audio=0
@@ -48,19 +55,29 @@ class Ffmpeg:
         return 0
 
     def capture_image(self, source, file_patch):
-        from config.config import SYSTEM
-        #cmnd = [SYSTEM["libery"]["FFMPEG"],'-timeout','30','-i', source, '-v', 'quiet','-r','1','-f','image2',file_patch,'-y']
-        cmnd = [SYSTEM["libery"]["FFMPEG"],'-timeout','30','-i', source, '-v', 'quiet','-vframes', '1', file_patch,'-y']
-        p = subprocess.Popen(cmnd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, bufsize=8192)
-        timeout = 15
-        i = 0
-        while p.poll() is None:
-            time.sleep(1)
-            i+=1
-            if i > timeout:
-                os.kill(p.pid, signal.SIGKILL)
-	p_code = p.wait()
-	return p_code
+    # Set the FFmpeg log level to quiet (hide FFmpeg log)
+    cv2.setUseOptimized(True)  # Optional: Enable optimizations for video capturing
+    cv2.CAP_PROP_FFMPEG_LOG_LEVEL = 0
+    #cap = cv2.VideoCapture('{0}?overrun_nonfatal=1&fifo_size=1500000 -hide_banner -loglevel panic'.format(source), cv2.CAP_FFMPEG)
+    cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
+        #time.sleep(3)
+    if cap is None or not cap.isOpened():
+        self.logger.error('OpenCV cap {0} is: {1}'.format(source, ConnectionError))
+        # raise ConnectionError
+            sys.exit(1)
+        # Suppress FFmpeg log output by redirecting stderr to /dev/null or NUL
+        if sys.platform.startswith('win'):
+            stderr_redirect = 'NUL'
+        else:
+            stderr_redirect = os.devnull
+    cap.setExceptionMode(True) # quan trong, khi mat luong se throw exception, neu ko set thi ko throw
+    frame = None
+    while frame == None:
+        ret, frame = cap.read()
+        if ret:
+               cv2.imwrite(file_patch, frame)
+               cap.release()
+               break
 
     def dectect_audio_volume(self, source, duration):
         '''source: udp://ip:port
