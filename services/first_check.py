@@ -65,7 +65,7 @@ class FirstCheck(object):
                 #print "Error code: " + str(data["status"])
                 #print data["message"]
                 exit(1)
-            # ancestor_thread_list = []
+            ancestor_thread_list = []
             for profile in profile_list:
                 while threading.activeCount() > profile['thread']:
                     time.sleep(1)
@@ -78,12 +78,14 @@ class FirstCheck(object):
                     )
                 )
                 t.start()
-            #     ancestor_thread_list.append(t)
+                time.sleep(0.2)
+                ancestor_thread_list.append(t)
             # 
             # Wait for all threads finish
             # 
-            # for ancestor_thread in ancestor_thread_list:
-            #     ancestor_thread.join()
+            for ancestor_thread in ancestor_thread_list:
+                ancestor_thread.join()
+            self.logger.info("Start: {0} End Video check:{1}".format(ctime, datetime.now().strftime("%H:%M:%S")))
         except Exception as e:
             self.logger.error(str(e))
             print(e)

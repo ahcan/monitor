@@ -166,10 +166,11 @@ class VideoCheck(object):
                 print data["message"]
                 self.logger.error("Error code: " + str(data["status"]) + " " + data["message"])
                 exit(1)
-            # ancestor_thread_list = []
+            ancestor_thread_list = []
             for profile in profile_list:
                 while threading.activeCount() > profile['thread']:
                     time.sleep(1)
+                self.logger.debug("thread is active:{0}".format(threading.activeCount()))
                 check_video = VideoCheck(
                                         id          = profile["id"],
                                         name        = profile["name"],
@@ -182,13 +183,15 @@ class VideoCheck(object):
                 )
                 t = threading.Thread(target=check_video.check_video)
                 t.start()
-            """
                 ancestor_thread_list.append(t)
+                time.sleep(0.2)
+            """
             Wait for all threads finish
+            """
             for ancestor_thread in ancestor_thread_list:
                 ancestor_thread.join()
-            """
-            time.sleep(60)
+            self.logger.info("Start: {0} End Video check:{1}".format(ctime, datetime.now().strftime("%H:%M:%S")))
+            # time.sleep(60)
         except Exception as e:
             self.logger.error(e)
             print "Exception: " + str(e)
