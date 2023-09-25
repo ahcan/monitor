@@ -16,17 +16,17 @@ class FirstCheck(object):
 
     def check_source(self, source, last_status, id, agent, thread, name, type):
         """
-        Get status of profile, if stastus not change then update check equal 1.      
-        Ffmpeg: Use Ffprobe to check stastus profile (source) and return flag 
+        Get status of profile, if stastus not change then update check equal 1.
+        Ffmpeg: Use Ffprobe to check stastus profile (source) and return flag
         0 is down
         1 is up
         2 is video error
-        3 is audio eror 
+        3 is audio eror
         """
         ffmpeg = Ffmpeg()
         check = ffmpeg.check_source(source)
-        self.check_audio(source, agent, name, type, vmin=-23)
-        #self.logger.debug("Source: %s Curent :%s <> Last: %s"%(source, check, last_status))
+        #self.check_audio(source, agent, name, type, vmin=-23)
+        self.logger.debug("Source: {0} Curent :{1} <> Last: {2}".format(source, check, last_status))
         if check != last_status:
             json_data = """{"source":"%s","status":%s,"pa_id":%s,"agent": "%s","thread":%s,"name":"%s","type":"%s"}"""%(source, last_status, id, agent, thread, name, type)
             file = File()
@@ -56,6 +56,7 @@ class FirstCheck(object):
             time.sleep(60)
             exit(0)
         try:
+            ctime = datetime.now().strftime("%H:%M:%S")
             profileBLL = ProfileBLL()
             data = profileBLL.get()
             if data["status"] == 200:
@@ -80,15 +81,15 @@ class FirstCheck(object):
                 t.start()
                 time.sleep(0.2)
                 ancestor_thread_list.append(t)
-            # 
+                #self.logger.debug("thread is active:{0}".format(threading.activeCount()))
+                while threading.activeCount() > profile['thread']:
+                    time.sleep(1)
             # Wait for all threads finish
-            # 
             for ancestor_thread in ancestor_thread_list:
-                ancestor_thread.join()
-            self.logger.info("Start: {0} End Video check:{1}".format(ctime, datetime.now().strftime("%H:%M:%S")))
+                 ancestor_thread.join()
+            self.logger.info("Start: {0} End First check: {1}".format(ctime, datetime.now().strftime("%H:%M:%S")))
         except Exception as e:
             self.logger.error(str(e))
-            print(e)
+            # print(e)
         finally:
             time.sleep(20)
-

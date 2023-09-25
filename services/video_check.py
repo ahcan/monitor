@@ -2,6 +2,7 @@ import time
 import logging
 import threading
 import subprocess
+import json
 from subprocess import call
 ###-image compare#########
 from PIL import Image #pip install Pillow
@@ -21,7 +22,7 @@ class VideoCheck(object):
     """docstring for VideoCheck"""
     def __init__(self, id = None, name = None, type = None, protocol = None, source = None, last_status = None, last_video_status = None, agent = None):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.image_path = '/tmp/capture/image.'+str(id)+'.png'
+        self.image_path = '/ramdisk/capture/image.'+str(id)+'.png'
         self.id = id
         self.name = name
         self.type = type
@@ -37,7 +38,7 @@ class VideoCheck(object):
         if os.path.isfile(self.image_path):
             previous_image = Image.open(self.image_path)
         else:
-            previous_image = Image.open('/tmp/capture/error.png')
+            previous_image = Image.open('/monitor/error.png')
             self.logger.debug("previous image {0}: Error".format(self.source))
         histogram_previous = previous_image.histogram()
         return histogram_previous
@@ -46,17 +47,23 @@ class VideoCheck(object):
         if os.path.isfile(self.image_path):
             os.remove(self.image_path)
         ffmpeg = Ffmpeg()
-        ffmpeg.capture_image(self.protocol+"://"+self.source, self.image_path)
+        return_code = ffmpeg.capture_image(self.protocol+"://"+self.source, self.image_path)
+        # self.logger.debug("Process capture: {0}".format(return_code))
         if os.path.isfile(self.image_path):
             curent_image = Image.open(self.image_path)
         else:
-            curent_image = Image.open('/tmp/capture/error.png')
+            curent_image = Image.open('/monitor/error.png')
             self.logger.debug("curent image {0}: Error".format(self.source))
         histogram_curent = curent_image.histogram()
+        # self.logger.debug("curent image {0}: {1}".format(self.source, histogram_curent))
         return histogram_curent
 
     def compare_two_images(self, histogram_previous, histogram_curent):
-        rms = int(math.sqrt(reduce(operator.add,map(lambda a,b: (a-b)**2, histogram_previous, histogram_curent))/len(histogram_previous)))
+    rms = 0
+    try:
+            rms = int(math.sqrt(reduce(operator.add,map(lambda a,b: (a-b)**2, histogram_previous, histogram_curent))/len(histogram_previous)))
+    except Exception as ex:
+        self.logger.debug("Compare images: {0}".format(ex))
         return rms
 
     def get_human_readable_status(self, status):
@@ -76,8 +83,8 @@ class VideoCheck(object):
         human_readable_status = self.get_human_readable_status(source_status)
         message = """%s %s (ip:%s) %s in host: %s (%s)"""%(self.name, self.type, self.source, human_readable_status, self.ip, self.agent)
         log_data = {
-                    "host": self.protocol + "://" + self.source, 
-                    "tag": "status", 
+                    "host": self.protocol + "://" + self.source,
+                    "tag": "status",
                     "msg": message
         }
         rslog = {
@@ -112,13 +119,13 @@ class VideoCheck(object):
         histogram_previous = self.get_histogram_previous_image()
         histogram_curent = self.get_histogram_curent_image()
         rms = self.compare_two_images(histogram_previous, histogram_curent)
-        self.logger.debug("First check RMS soure(%s) :%d"%(self.source,rms))
+        #self.logger.debug("First check RMS soure(%s) :%d"%(self.source,rms))
         ctime = datetime.now().strftime("%H:%M:%S").split(":")
         chour, cminute,csecond = ctime
         shour, sminute, ssecond = STIME
         ehour, eminute, esecond = ETIME
         chour, cminute, csecond, shour, sminute,ssecond, ehour, eminute, esecond = int(chour),int(cminute),int(csecond),int(shour),int(sminute),int(ssecond),int(ehour),int(eminute),int(esecond)
-        #self.logger.debug("First check RMS soure(%s) :%d"%(self.source.split(":")[0],rms))
+        self.logger.debug("First check RMS soure(%s) :%d"%(self.source.split(":")[0],rms))
         if rms < 150:
             if (self.source.split(":")[0] in CHANNEL) and chour <= ehour and chour >= shour:
                 # check soure in time no check video
@@ -157,6 +164,7 @@ class VideoCheck(object):
             time.sleep(60)
             exit(0)
         try:
+            ctime = datetime.now().strftime("%H:%M:%S")
             profileBLL = ProfileBLL()
             data = profileBLL.get_video_check_list()
             if data["status"] == 200:
@@ -168,9 +176,10 @@ class VideoCheck(object):
                 exit(1)
             ancestor_thread_list = []
             for profile in profile_list:
-                while threading.activeCount() > profile['thread']:
-                    time.sleep(1)
-                self.logger.debug("thread is active:{0}".format(threading.activeCount()))
+                #while threading.activeCount() > profile['thread']:
+                #self.logger.debug("thread is active:{0}".format(threading.activeCount()))
+                #while threading.activeCount() > 3:
+                #    time.sleep(1)
                 check_video = VideoCheck(
                                         id          = profile["id"],
                                         name        = profile["name"],
@@ -183,16 +192,30 @@ class VideoCheck(object):
                 )
                 t = threading.Thread(target=check_video.check_video)
                 t.start()
-                ancestor_thread_list.append(t)
                 time.sleep(0.2)
+                ancestor_thread_list.append(t)
+                self.logger.debug("thread is active:{0}".format(threading.activeCount()))
+                while threading.activeCount() > profile['thread']:
+                    time.sleep(1)
             """
+                ancestor_thread_list.append(t)
             Wait for all threads finish
-            """
             for ancestor_thread in ancestor_thread_list:
                 ancestor_thread.join()
-            self.logger.info("Start: {0} End Video check:{1}".format(ctime, datetime.now().strftime("%H:%M:%S")))
+                while threading.activeCount() > 3:
+                    time.sleep(1)
+            """
+            #for ancestor_thread in ancestor_thread_list:
+        #    #ancestor_thread.setDaemon(True)
+            #    ancestor_thread.start()
+            #    self.logger.debug("thread is active:{0}".format(threading.activeCount()))
+            #    while threading.activeCount() > profile['thread']:
+            #        time.sleep(1)
+            for ancestor_thread in ancestor_thread_list:
+                ancestor_thread.join()
             # time.sleep(60)
+            self.logger.info("Start: {0} End Video check:{1}".format(ctime, datetime.now().strftime("%H:%M:%S")))
         except Exception as e:
             self.logger.error(e)
-            print "Exception: " + str(e)
-            time.sleep(10)
+            #print "Exception: " + str(e)
+            time.sleep(2
