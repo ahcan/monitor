@@ -59,12 +59,12 @@ class VideoCheck(object):
         return histogram_curent
 
     def compare_two_images(self, histogram_previous, histogram_curent):
-    rms = 0
-    try:
-            rms = int(math.sqrt(reduce(operator.add,map(lambda a,b: (a-b)**2, histogram_previous, histogram_curent))/len(histogram_previous)))
-    except Exception as ex:
-        self.logger.debug("Compare images: {0}".format(ex))
-        return rms
+        rms = 0
+        try:
+                rms = int(math.sqrt(reduce(operator.add,map(lambda a,b: (a-b)**2, histogram_previous, histogram_curent))/len(histogram_previous)))
+        except Exception as ex:
+            self.logger.debug("Compare images: {0}".format(ex))
+            return rms
 
     def get_human_readable_status(self, status):
         alarm_status = {0: "DOWN       ", 1: "VIDEO OK   ", 2: "VIDEO ERROR", 3: "AUDIO ERROR"} [status]
@@ -218,4 +218,4 @@ class VideoCheck(object):
         except Exception as e:
             self.logger.error(e)
             #print "Exception: " + str(e)
-            time.sleep(2
+            time.sleep(2)
