@@ -106,7 +106,7 @@ class LastCheck(object):
             for line in profile_list.split('\n'):
                 self.logger.debug("Last Check : %s"%(line))
                 profile = json.loads(line)
-                while threading.activeCount() > profile['thread']:
+                while threading.activeCount() > profile['thread']/2:
                     time.sleep(1)
                 t = threading.Thread(target=self.check_source,args=(profile['source'],
                     profile['status'],
@@ -117,7 +117,7 @@ class LastCheck(object):
                     )
                 )
                 t.start()
-            #time.sleep(30)
+                time.sleep(0.2)
                 ancestor_thread_list.append(t)
         for ancestor_thread in ancestor_thread_list:
             ancestor_thread.join()

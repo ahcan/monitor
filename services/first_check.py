@@ -7,6 +7,7 @@ from utils.ffmpeg import Ffmpeg
 from BLL.profile import Profile as ProfileBLL
 from config.config import SYSTEM
 from rabbit import Rabbit
+from datetime import datetime
 import json
 
 class FirstCheck(object):
@@ -68,6 +69,7 @@ class FirstCheck(object):
                 exit(1)
             ancestor_thread_list = []
             for profile in profile_list:
+                #self.logger.debug("thread is active:{0}".format(threading.activeCount()))
                 while threading.activeCount() > profile['thread']:
                     time.sleep(1)
                 t = threading.Thread(target=self.check_source, args=(profile['protocol']+'://'+profile['ip'], profile['status'],
@@ -81,9 +83,6 @@ class FirstCheck(object):
                 t.start()
                 time.sleep(0.2)
                 ancestor_thread_list.append(t)
-                #self.logger.debug("thread is active:{0}".format(threading.activeCount()))
-                while threading.activeCount() > profile['thread']:
-                    time.sleep(1)
             # Wait for all threads finish
             for ancestor_thread in ancestor_thread_list:
                  ancestor_thread.join()
