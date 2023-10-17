@@ -14,13 +14,14 @@ class ApiMonitor:
         self.profile_agent_url = api_url + "profile_agent/"
         self.snmp_url = api_url + "profile_agent/snmp/"
         self.video_check_url = api_url + "profile_agent/video_check/"
+        self.proxies={"http":"", "https":""}
 
     def get(self, url):
         message = "Unknow"
         data = None
         status = 500
         try:
-            rsp = requests.get(url, auth=HTTPBasicAuth(self.user, self.password), timeout=5)
+            rsp = requests.get(url, auth=HTTPBasicAuth(self.user, self.password), proxies=self.proxies, timeout=5)
         except ConnectionError as e:
             message = str(e)
             data = None
@@ -53,7 +54,7 @@ class ApiMonitor:
         data = None
         status = 500
         try:
-            rsp = requests.put(url, json = json_data, auth=HTTPBasicAuth(self.user, self.password), timeout=5)
+            rsp = requests.put(url, json = json_data, auth=HTTPBasicAuth(self.user, self.password), proxies=self.proxies, timeout=5)
         except ConnectionError as e:
             message = str(e)
             data = None
@@ -92,7 +93,7 @@ class ApiMonitor:
         data = None
         status = 500
         try:
-            rsp = requests.post(url, json = json_data, auth=HTTPBasicAuth(self.user, self.password), timeout=5)
+            rsp = requests.post(url, json = json_data, auth=HTTPBasicAuth(self.user, self.password), proxies=self.proxies, timeout=5)
         except ConnectionError as e:
             message = str(e)
             data = None
