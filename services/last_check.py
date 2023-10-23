@@ -27,13 +27,13 @@ class LastCheck(object):
         """
         ffmpeg = Ffmpeg()
         check = ffmpeg.check_source(source)
-        print "%s : %s"%(check, last_status)
-        self.logger.debug("Curent :%s <> Last: %s, %s %s %s"%(check, last_status, source, name, type))
+        # print "%s : %s"%(check, last_status)
+        self.logger.debug("Curent :%s Last: %s, %s %s %s"%(check, last_status, source, name, type))
         if check != last_status:
             date_time = DateTime()
             opdate = date_time.get_now()
             time.sleep(SYSTEM["BREAK_TIME"])
-            self.logger.debug("Recheck : %s %s %s"%(source, name, type))
+            # self.logger.debug("Recheck : %s %s %s"%(source, name, type))
             recheck = ffmpeg.check_source(source)
             if recheck == check:
                 status = {0: "DOWN       ", 1: "UP         ", 2: "VIDEO ERROR", 3: "AUDIO ERROR"} [check]
@@ -74,7 +74,7 @@ class LastCheck(object):
                 child_thread = threading.Thread(target=log.post, args=(log_data,))
                 child_thread.start()
                 child_thread_list.append(child_thread)
-                """Update local snmp IPTV"""
+                """Update local snmp IPTV when agent is core probe"""
                 if "origin" or "4500" in agent:
                     self.logger.debug("%s is core probe"%(agent))
                     time.sleep(2)
@@ -104,7 +104,7 @@ class LastCheck(object):
         profile_list = profile_list[0:len(profile_list)-1]
         if(profile_list):
             for line in profile_list.split('\n'):
-                self.logger.debug("Last Check : %s"%(line))
+                # self.logger.debug("Last Check : %s"%(line))
                 profile = json.loads(line)
                 while threading.activeCount() > profile['thread']/2:
                     time.sleep(1)

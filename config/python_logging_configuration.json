@@ -3,25 +3,25 @@
     "disable_existing_loggers": true,
     "formatters":{ 
         "dal": {
-            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - serverity: %(levelname)s - message: %(message)s"
+            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
         },
         "rabbit":{
-            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - serverity: %(levelname)s - message: %(message)s"
+            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
         },
         "sync_alarm":{
-            "format":"SyncAlam: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - serverity: %(levelname)s - message: %(message)s"
+            "format":"SyncAlam: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
         },
         "supervisord":{
-            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - serverity: %(levelname)s - message: %(message)s"
+            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
         },
         "utils":{
-            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - serverity: %(levelname)s - message: %(message)s"
+            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
         },
         "monitor":{
-            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s - %(lineno)d -  serverity: %(levelname)s - message: %(message)s"
+            "format":"Monitor [%(asctime)s] %(name)s p%(process)s ln%(lineno)d severity: %(levelname)s  message: %(message)s"
         },
         "audio":{
-            "format":"AudioDetect - serverity: %(levelname)s - message: %(message)s"
+            "format":"AudioDetect - severity: %(levelname)s - message: %(message)s"
         }
     },
     "handlers": {

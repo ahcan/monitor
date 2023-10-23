@@ -119,17 +119,17 @@ class VideoCheck(object):
         histogram_previous = self.get_histogram_previous_image()
         histogram_curent = self.get_histogram_curent_image()
         rms = self.compare_two_images(histogram_previous, histogram_curent)
-        #self.logger.debug("First check RMS soure(%s) :%d"%(self.source,rms))
+        # self.logger.debug("First check RMS soure(%s) :%d"%(self.source,rms))
         ctime = datetime.now().strftime("%H:%M:%S").split(":")
         chour, cminute,csecond = ctime
         shour, sminute, ssecond = STIME
         ehour, eminute, esecond = ETIME
         chour, cminute, csecond, shour, sminute,ssecond, ehour, eminute, esecond = int(chour),int(cminute),int(csecond),int(shour),int(sminute),int(ssecond),int(ehour),int(eminute),int(esecond)
-        self.logger.debug("First check RMS soure(%s) :%d"%(self.source.split(":")[0],rms))
+        self.logger.info("First check RMS soure(%s) :%d"%(self.source.split(":")[0],rms))
         if rms < 150:
             if (self.source.split(":")[0] in CHANNEL) and chour <= ehour and chour >= shour:
-                # check soure in time no check video
-                self.logger.debug("Soures don't check %s %s %s: %d"%(self.source, self.name, self.type, rms))
+                # do not check video in time
+                # self.logger.warning("Soures don't check %s %s %s: %d"%(self.source, self.name, self.type, rms))
                 video_status = 1
                 source_status = 1
                 self.update_data(video_status, source_status)
@@ -170,8 +170,6 @@ class VideoCheck(object):
             if data["status"] == 200:
                 profile_list = data["data"]
             else:
-                #print "Error code: " + str(data["status"])
-                #print data["message"]
                 self.logger.error("Error code: " + str(data["status"]) + " " + data["message"])
                 exit(1)
             ancestor_thread_list = []

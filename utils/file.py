@@ -77,10 +77,9 @@ class File:
             f = open(self.filedir, 'a')
             f.write(text+"\n")
             f.close()
-            return 0
-        else:
-            print "replicate"
-            return 1
+            return False
+            # print "replicate"
+        return True
 
 class Snmp:
     def __init__(self):
