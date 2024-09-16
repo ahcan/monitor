@@ -93,17 +93,17 @@ class Snmp:
         self.analyzer_channel_profile = "{0}/snmp/analyzer/channel_profile".format(self.currentPath)
 
     def read_profile(self, file_path = None):
-        file_path = self.channel_profile
+        file_path = self.agent_channel_profile
         with open(file_path, "r") as text_file:
             return text_file.read()
 
     def read_status(self, file_path = None):
-        file_path = self.channel_status
+        file_path = self.agnet_channel_status
         with open(file_path, "r") as text_file:
             return text_file.read()
 
     def read_name(self, file_path = None):
-        file_path = self.channel_name
+        file_path = self.agent_channel_name
         with open(file_path, "r") as text_file:
             return text_file.read()
 
