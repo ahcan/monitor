@@ -2,23 +2,11 @@
     "version": 1,
     "disable_existing_loggers": true,
     "formatters":{ 
-        "dal": {
-            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
-        },
-        "rabbit":{
-            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
-        },
-        "sync_alarm":{
-            "format":"SyncAlam: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
-        },
-        "supervisord":{
-            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
-        },
         "utils":{
-            "format":"Monitor: date: %(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
+            "format":"%(asctime)s - %(name)s - p%(process)s {%(pathname)s:%(lineno)d} - severity: %(levelname)s - message: %(message)s"
         },
         "monitor":{
-            "format":"Monitor [%(asctime)s] %(name)s p%(process)s ln%(lineno)d severity: %(levelname)s  message: %(message)s"
+            "format":"Monitor: %(asctime)s - %(name)s - p%(process)s - ln%(lineno)d - severity: %(levelname)s - message: %(message)s"
         },
         "audio":{
             "format":"AudioDetect - severity: %(levelname)s - message: %(message)s"
@@ -30,25 +18,25 @@
             "encoding": "utf8",
             "class": "logging.FileHandler",
             "level": "DEBUG",
-            "formatter": "dal"
+            "formatter": "utils"
         },
         "rabbit_handler":{
             "filename": "/var/log/monitor/rabbit.log",
             "class": "logging.FileHandler",
             "level": "DEBUG",
-            "formatter": "rabbit"
+            "formatter": "utils"
         },
         "sync_alarm_handler":{
             "filename": "/var/log/monitor/sync_alarm.log",
             "class": "logging.FileHandler",
             "level": "DEBUG",
-            "formatter": "monitor"
+            "formatter": "utils"
         },
         "supervisord_handler":{
             "filename": "/var/log/monitor/supervisord.log",
             "class": "logging.FileHandler",
             "level": "DEBUG",
-            "formatter": "supervisord"
+            "formatter": "utils"
         },
         "utils_handler":{
             "filename": "/var/log/monitor/utils.log",
@@ -89,39 +77,39 @@
     "loggers": {
         "dal": {
             "handlers": ["dal_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "rabbit": {
             "handlers": ["rabbit_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "sync_alarm": {
             "handlers": ["sync_alarm_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "supervisord": {
             "handlers": ["supervisord_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "utils": {
             "handlers": ["utils_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "Ffmpeg": {
             "handlers": ["ffmpeg_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "FirstCheck": {
             "handlers": ["utils_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "LastCheck": {
             "handlers": ["utils_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "VideoCheck": {
             "handlers": ["utils_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "monitor": {
             "handlers": ["monitor_handler"],
@@ -129,11 +117,15 @@
         },
         "RequiredCheck": {
             "handlers": ["ffmpeg_handler"],
-            "level": "DEBUG"
+            "level": "INFO"
         },
         "AudioCheck": {
             "handlers": ["audio_handler"],
             "level": "DEBUG"
+        },
+        "Snmp": {
+            "handlers": ["utils_handler"],
+            "level": "INFO"
         }
     }
 }

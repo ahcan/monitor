@@ -53,7 +53,7 @@ class VideoCheck(object):
             curent_image = Image.open(self.image_path)
         else:
             curent_image = Image.open('/monitor/error.png')
-            self.logger.debug("curent image {0}: Error".format(self.source))
+            self.logger.error("curent image {0}: Error".format(self.source))
         histogram_curent = curent_image.histogram()
         # self.logger.debug("curent image {0}: {1}".format(self.source, histogram_curent))
         return histogram_curent
@@ -61,13 +61,13 @@ class VideoCheck(object):
     def compare_two_images(self, histogram_previous, histogram_curent):
         rms = 0
         try:
-                rms = int(math.sqrt(reduce(operator.add,map(lambda a,b: (a-b)**2, histogram_previous, histogram_curent))/len(histogram_previous)))
+            rms = int(math.sqrt(reduce(operator.add,map(lambda a,b: (a-b)**2, histogram_previous, histogram_curent))/len(histogram_previous)))
         except Exception as ex:
-            self.logger.debug("Compare images: {0}".format(ex))
-            return rms
+            self.logger.error("Compare images: {0}".format(ex))
+        return rms
 
     def get_human_readable_status(self, status):
-        alarm_status = {0: "DOWN       ", 1: "VIDEO OK   ", 2: "VIDEO ERROR", 3: "AUDIO ERROR"} [status]
+        alarm_status = {0: "DOWN", 1: "VIDEO OK", 2: "VIDEO ERROR", 3: "AUDIO ERROR"} [status]
         return alarm_status
 
     def update_data(self, video_status, source_status):
@@ -76,7 +76,7 @@ class VideoCheck(object):
         child_thread_list = []
         profile = ProfileBLL()
         profile_data = {"video": video_status, "agent": self.agent, "ip": self.ip}
-        self.logger.debug("update profile data: video{0} - agent{1} - ip{2}".format(video_status,self.agent, self.ip))
+        self.logger.debug("update profile data: video {0} - agent {1} - ip {2}".format(video_status,self.agent, self.ip))
         child_thread = threading.Thread(target=profile.put, args=(self.id, profile_data,))
         child_thread.start()
         child_thread_list.append(child_thread)
@@ -125,7 +125,7 @@ class VideoCheck(object):
         shour, sminute, ssecond = STIME
         ehour, eminute, esecond = ETIME
         chour, cminute, csecond, shour, sminute,ssecond, ehour, eminute, esecond = int(chour),int(cminute),int(csecond),int(shour),int(sminute),int(ssecond),int(ehour),int(eminute),int(esecond)
-        self.logger.info("First check RMS soure(%s) :%d"%(self.source.split(":")[0],rms))
+        self.logger.debug("First check RMS soure({0}) :{1}".format(self.source.split(":")[0],rms))
         if rms < 150:
             if (self.source.split(":")[0] in CHANNEL) and chour <= ehour and chour >= shour:
                 # do not check video in time
@@ -138,7 +138,7 @@ class VideoCheck(object):
                 time.sleep(SYSTEM["BREAK_TIME"] * 3)
                 histogram_recheck = self.get_histogram_curent_image()
                 rms = self.compare_two_images(histogram_curent, histogram_recheck)
-                self.logger.info("Recheck RMS %s %s %s: %d"%(self.source, self.name, self.type, rms))
+                self.logger.debug("Recheck RMS {0} {1} {2}: {3}".format(self.source, self.name, self.type, rms))
                 if rms < 150:
                     video_status = 0
                     source_status = 2
@@ -148,7 +148,7 @@ class VideoCheck(object):
                 time.sleep(SYSTEM["BREAK_TIME"] * 3)
                 histogram_recheck = self.get_histogram_curent_image()
                 rms = self.compare_two_images(histogram_curent, histogram_recheck)
-                self.logger.info("Recheck RMS %s %s %s: %d"%(self.source, self.name, self.type, rms))
+                self.logger.debug("Recheck RMS {0} {1} {2}: {3}".format(self.source, self.name, self.type, rms))
                 if rms >= 200:
                     video_status = 1
                     source_status = 1
@@ -160,7 +160,7 @@ class VideoCheck(object):
         if not SYSTEM["monitor"]["BLACK_SCREEN"]:
             message = "Black screen monitor is disable, check your config!"
             self.logger.warning(message)
-            print message
+            # print message
             time.sleep(60)
             exit(0)
         try:
@@ -206,3 +206,4 @@ class VideoCheck(object):
             self.logger.error(e)
             #print "Exception: " + str(e)
             time.sleep(2)
+

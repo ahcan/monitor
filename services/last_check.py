@@ -28,7 +28,7 @@ class LastCheck(object):
         ffmpeg = Ffmpeg()
         check = ffmpeg.check_source(source)
         # print "%s : %s"%(check, last_status)
-        self.logger.debug("Curent :%s Last: %s, %s %s %s"%(check, last_status, source, name, type))
+        self.logger.debug("Curent :{0} Last: {1}, {2} {3} {4}".format(check, last_status, source, name, type))
         if check != last_status:
             date_time = DateTime()
             opdate = date_time.get_now()
@@ -36,7 +36,7 @@ class LastCheck(object):
             # self.logger.debug("Recheck : %s %s %s"%(source, name, type))
             recheck = ffmpeg.check_source(source)
             if recheck == check:
-                status = {0: "DOWN       ", 1: "UP         ", 2: "VIDEO ERROR", 3: "AUDIO ERROR"} [check]
+                status = {0: "DOWN", 1: "UP", 2: "VIDEO ERROR", 3: "AUDIO ERROR"} [check]
                 """
                 Update status and write log
                 """
@@ -75,7 +75,7 @@ class LastCheck(object):
                 child_thread.start()
                 child_thread_list.append(child_thread)
                 """Update local snmp IPTV when agent is core probe"""
-                if "origin" or "4500" in agent:
+                if "origin" in agent or "4500" in agent or "5100" in agent:
                     self.logger.debug("%s is core probe"%(agent))
                     time.sleep(2)
                     snmp = Snmp()

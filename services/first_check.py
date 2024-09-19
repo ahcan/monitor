@@ -33,7 +33,7 @@ class FirstCheck(object):
             file = File()
             replicate = file.append_to_check_list(json_data)
             if not replicate:
-                self.logger.info("Doubt curent: %s last: %s source: %s agent: %s name: %s type: %s"%(check, last_status, source, agent, name, type))
+                self.logger.info("Doubt curent: {0} last: {1} source: {2} agent: {3} name: {4} type: {5}".format(check, last_status, source, agent, name, type))
 
     def check_audio(self, source, agent, name, type, vmin):
         """

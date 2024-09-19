@@ -84,7 +84,7 @@ class File:
 class Snmp:
     def __init__(self):
         from pathlib import Path
-        self.currentPath = Path(__file__).parent.absolute()
+        self.currentPath = Path(__file__).parent.parent.absolute()
         self.agent_channel_status = "{0}/snmp/agent/channel_status".format(self.currentPath)
         self.agent_channel_name = "{0}/snmp/agent/channel_name".format(self.currentPath)
         self.agent_channel_profile = "{0}/snmp/agent/channel_profile".format(self.currentPath)
@@ -93,17 +93,17 @@ class Snmp:
         self.analyzer_channel_profile = "{0}/snmp/analyzer/channel_profile".format(self.currentPath)
 
     def read_profile(self, file_path = None):
-        file_path = self.channel_profile
+        file_path = self.agent_channel_profile
         with open(file_path, "r") as text_file:
             return text_file.read()
 
     def read_status(self, file_path = None):
-        file_path = self.channel_status
+        file_path = self.agent_channel_status
         with open(file_path, "r") as text_file:
             return text_file.read()
 
     def read_name(self, file_path = None):
-        file_path = self.channel_name
+        file_path = self.agent_channel_name
         with open(file_path, "r") as text_file:
             return text_file.read()
 

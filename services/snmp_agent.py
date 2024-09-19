@@ -8,7 +8,7 @@ from utils.file import Snmp as FileSnmp
 class Snmp(object):
     """docstring for Snmp"""
     def __init__(self):
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def execute_command(self, cmd):
         """
@@ -41,7 +41,7 @@ class Snmp(object):
         profile_list = self.get_data()
         if not profile_list:
             print "Snmp data empty!"
-            self.logger.info("Snmp data empty")
+            self.logger.warning("Snmp data empty")
             return 1
         """
         Refesh snmp file
@@ -81,7 +81,7 @@ class Snmp(object):
         profile_list = self.get_data()
         if not profile_list:
             print "Snmp data empty!"
-            self.logger.info("Snmp data empty")
+            self.logger.warning("Snmp data empty")
             return 1
         """
         Refesh snmp file
