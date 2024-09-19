@@ -99,6 +99,7 @@ class Snmp:
 
     def read_status(self, file_path = None):
         file_path = self.agent_channel_status
+
         with open(file_path, "r") as text_file:
             return text_file.read()
 
