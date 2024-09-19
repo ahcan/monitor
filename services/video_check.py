@@ -20,6 +20,7 @@ from snmp_agent import AgentSnmp as LocalSnmp
 
 class VideoCheck(object):
     """docstring for VideoCheck"""
+    ImageFile.LOAD_TRUNCATED_IMAGES = True
     def __init__(self, id = None, name = None, type = None, protocol = None, source = None, last_status = None, last_video_status = None, agent = None):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.image_path = '/ramdisk/capture/image.'+str(id)+'.png'
@@ -119,7 +120,6 @@ class VideoCheck(object):
         histogram_previous = self.get_histogram_previous_image()
         histogram_curent = self.get_histogram_curent_image()
         rms = self.compare_two_images(histogram_previous, histogram_curent)
-        # self.logger.debug("First check RMS soure(%s) :%d"%(self.source,rms))
         ctime = datetime.now().strftime("%H:%M:%S").split(":")
         chour, cminute,csecond = ctime
         shour, sminute, ssecond = STIME
