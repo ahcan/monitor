@@ -4,10 +4,11 @@ import logging.config
 import logging.handlers
 
 from .file import File, SupervisordFile
-from .ffmpeg import Ffmpeg
+# from .ffmpeg import Ffmpeg
 from .DateTime import DateTime
 from .system_status import SystemStatus
 from pathlib import Path
+from .opencv import Ffmpeg
 
 currentPath = Path().parent.absolute()
 with open("{0}/config/python_logging_configuration.json".format(currentPath), 'r') as configuration_file:
